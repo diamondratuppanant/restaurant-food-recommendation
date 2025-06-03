@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "Grilled Chicken Salad",
+    "ingredients": ["chicken", "lettuce", "tomato", "olive oil"],
+    "price": 9.99,
+    "tags": ["healthy", "low-carb", "gluten-free"]
+  },
+  {
+    "id": 2,
+    "name": "Peanut Noodles",
+    "ingredients": ["noodles", "peanuts", "soy sauce"],
+    "price": 8.50,
+    "tags": ["vegan", "spicy"]
+  }
+]
