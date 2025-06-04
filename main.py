@@ -1,3 +1,5 @@
+from bill_tracker import BillTracker
+
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
 from langchain.tools import tool
@@ -8,36 +10,57 @@ from pathlib import Path
 
 menu_path = Path(__file__).parent / "data" / "menu.json"
 with open(menu_path, "r") as file:
-    menu_data = json.load(file)
+    full_menu = json.load(file)
 
+menu_data = full_menu["items"]
+
+tracker = BillTracker()
 load_dotenv()
 
 @tool
-def recommend_dish(preference: str) -> str:
-    """Recommending a dish based on user preference such as 'cheap', 'vegan', 'no peanuts', etc"""
-    recommendations = []
-    print("Recommending Dishes...")
-    for item in menu_data:
-        if "no peanuts" in preference.lower() and "peanuts" in item["ingredients"]:
-            continue
-        if "cheap" in preference.lower() and item["price"] > 10:
-            continue
-        if any(tag in preference.lower() for tag in item["tags"]):
-            recommendations.append(item["name"])
-    return ", ".join(recommendations) if recommendations else "No suitable dishes found."
-
-def display_menu(query: str) -> str:
-    """If the user asks what is on the menu"""
+def display_menu(_: str) -> list:
+    """Displays the menu to the user."""
+    print("Fetching menu...")
+    if not menu_data:
+        return "The menu is currently empty."
+    lines = [f"- {item['name']}: ${item['price']}" for item in menu_data]
     return menu_data
+
+
+
+
+
+@tool
+def add_to_bill(item: str) -> str:
+    """If the user asks to add an item to the bill"""
+    for food in menu_data:
+        if food["name"].lower().strip() == item.lower().strip():
+            tracker.add(food)
+            return f"{food['name']} has been added to the bill."
+    return "That item is not on the menu."
+
+@tool
+def ask_for_bill() -> str:
+    """If the user asks to see the bill"""
+    return tracker.summary()
+
+@tool
+def remove_from_bill(item: str) -> str:
+    """Removes an item from the user's bill."""
+    removed = tracker.remove(item)
+    if removed:
+        return f"{removed['name']} has been removed from the bill."
+    return "That item is not on your bill."
 
 def main():
     model = ChatOpenAI(temperature=0)
 
-    tools=[recommend_dish, display_menu]
+
+    tools=[display_menu,add_to_bill, ask_for_bill, remove_from_bill]
     agent_executor = create_react_agent(model, tools)
 
-    print("Hello! I am an AI assistant")
-    print("Please ask me things to do: ", end="")
+    print("Hello! Welcome to Sushi Naiya")
+    print("Feel free to ask me about the menu. ", end="")
 
     while True:
         user_input = input("\nUSER> ").strip()

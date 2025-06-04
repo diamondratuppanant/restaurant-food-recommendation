@@ -1,16 +1,56 @@
-[
-  {
-    "id": 1,
-    "name": "Grilled Chicken Salad",
-    "ingredients": ["chicken", "lettuce", "tomato", "olive oil"],
-    "price": 9.99,
-    "tags": ["healthy", "low-carb", "gluten-free"]
+{
+  "modifiers": {
+    "protein": [
+      {"name": "Chicken", "price":  2.0},
+      {"name": "Tofu", "price":  2.0},
+      {"name": "Pork", "price":  2.0},
+      {"name": "Vegetable", "price":  0},
+      {"name": "Steak", "price": 3.0 }
+    ],
+    "spice_level": [
+      {"name": "0", "price":  0},
+      {"name": "1", "price":  0},
+      {"name": "2", "price":  0},
+      {"name": "3", "price":  0},
+      {"name": "4", "price":  0},
+      {"name": "5", "price":  0}
+    ]
   },
-  {
-    "id": 2,
-    "name": "Peanut Noodles",
-    "ingredients": ["noodles", "peanuts", "soy sauce"],
-    "price": 8.50,
-    "tags": ["vegan", "spicy"]
-  }
-]
+  "items": [
+    {
+      "id": 1,
+      "name": "Pad Thai",
+      "base_price": 9.99,
+      "ingredients": ["rice noodles", "pad thai sauce", "egg", "carrots", "bean sprouts", "green onion"],
+      "tags": ["thai", "noodles", "stir fry", "sweet"]
+    },
+    {
+      "id": 2,
+      "name": "Red Curry",
+      "base_price": 9.99,
+      "ingredients": ["red curry paste", "coconut milk", "bell pepper", "carrots", "bean sprouts", "green onion"],
+      "tags": ["thai", "curry", "soup", "spicy"]
+    },
+    {
+      "id": 3,
+      "name": "Green Curry",
+      "base_price": 9.99,
+      "ingredients": ["Green Curry Paste", "bell pepper", "basil leaves", "carrots", "bean sprouts", "green onion"],
+      "tags": ["thai", "curry", "soup", "spicy"]
+    },
+    {
+      "id": 4,
+      "name": "Crunchy Salmon Roll",
+      "base_price": 12.99,
+      "ingredients": ["rice", "seaweed", "salmon", "avocado", "cream cheese", "scallions"],
+      "tags": ["japanese", "sushi", "fried"]
+    },
+    {
+      "id": 5,
+      "name": "California Roll",
+      "base_price": 8.99,
+      "ingredients": ["rice", "seaweed", "imitation krab", "avocado", "cucumber"],
+      "tags": ["japanese", "sushi", "fresh"]
+    }
+  ]
+}
