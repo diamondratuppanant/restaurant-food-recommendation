@@ -18,12 +18,11 @@ tracker = BillTracker()
 load_dotenv()
 
 @tool
-def display_menu(_: str) -> list:
+def display_menu() -> list:
     """Displays the menu to the user."""
     print("Fetching menu...")
     if not menu_data:
         return "The menu is currently empty."
-    lines = [f"- {item['name']}: ${item['price']}" for item in menu_data]
     return menu_data
 
 
@@ -33,6 +32,7 @@ def display_menu(_: str) -> list:
 @tool
 def add_to_bill(item: str) -> str:
     """If the user asks to add an item to the bill"""
+    print("adding to bill...")
     for food in menu_data:
         if food["name"].lower().strip() == item.lower().strip():
             tracker.add(food)
@@ -42,11 +42,13 @@ def add_to_bill(item: str) -> str:
 @tool
 def ask_for_bill() -> str:
     """If the user asks to see the bill"""
+    print("retrieving bill...")
     return tracker.summary()
 
 @tool
 def remove_from_bill(item: str) -> str:
     """Removes an item from the user's bill."""
+    print("removing from bill...")
     removed = tracker.remove(item)
     if removed:
         return f"{removed['name']} has been removed from the bill."
@@ -75,6 +77,7 @@ def main():
             if "agent" in chunk and "messages" in chunk["agent"]:
                 for message in chunk["agent"]["messages"]:
                     print(message.content, end="")
+
 
 if __name__ == "__main__":
     main()
