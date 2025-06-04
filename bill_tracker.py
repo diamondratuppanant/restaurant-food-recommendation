@@ -1,10 +1,25 @@
 # bill_tracker.py
+import json
+from enum import verify
+from pathlib import Path
+
+menu_path = Path(__file__).parent / "data" / "menu.json"
+with open(menu_path, "r") as file:
+    full_menu = json.load(file)
+
+menu_data = full_menu["items"]
+modifiers = full_menu["modifiers"]
+
+
 class BillTracker:
     def __init__(self):
         self.items = []
 
     def add(self, item):
-        self.items.append(item)
+        for food in menu_data:
+            if item.lower().strip() == food["name"].lower().strip():
+                self.items.append(food)
+
 
     def get(self):
         return self.items
@@ -12,9 +27,9 @@ class BillTracker:
     def summary(self):
         if not self.items:
             return "Your bill is currently empty."
-        total = sum(item["base_price"] for item in self.items)
+        total = sum(item["base_price"] for item in self.items) * 1.065
         lines = [f"{item['name']}: {item['base_price']}" for item in self.items]
-        lines.append(f"Total: ${total:.2f}")
+        lines.append(f"Total: ${total:.2f} including tax")
         return "\n".join(lines)
 
 
@@ -24,3 +39,15 @@ class BillTracker:
                 del self.items[i]
                 return item
         return None
+
+    def display(self):
+        name_and_price = []
+        if not menu_data:
+            return "There is no menu."
+        else:
+            for food in menu_data:
+                name_and_price.append(f"{food['name']}: {food['base_price']}")
+            return name_and_price
+
+    def display_menu(self):
+        return menu_data

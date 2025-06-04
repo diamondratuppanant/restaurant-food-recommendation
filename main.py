@@ -5,14 +5,6 @@ from langchain_openai import ChatOpenAI
 from langchain.tools import tool
 from langgraph.prebuilt import create_react_agent
 from dotenv import load_dotenv
-import json
-from pathlib import Path
-
-menu_path = Path(__file__).parent / "data" / "menu.json"
-with open(menu_path, "r") as file:
-    full_menu = json.load(file)
-
-menu_data = full_menu["items"]
 
 tracker = BillTracker()
 load_dotenv()
@@ -21,26 +13,22 @@ load_dotenv()
 def display_menu() -> list:
     """Displays the menu to the user."""
     print("Fetching menu...")
-    if not menu_data:
-        return "The menu is currently empty."
-    return menu_data
+    return tracker.display()
 
-
-
-
+@tool
+def display_full_menu() -> list:
+    """this is an index for the AI to reference tags and ingredients for the user. this is not to be shown if the user asks for the menu"""
+    print("fetching details")
+    return tracker.display_menu()
 
 @tool
 def add_to_bill(item: str) -> str:
     """If the user asks to add an item to the bill"""
     print("adding to bill...")
-    for food in menu_data:
-        if food["name"].lower().strip() == item.lower().strip():
-            tracker.add(food)
-            return f"{food['name']} has been added to the bill."
-    return "That item is not on the menu."
+    tracker.add(item)
 
 @tool
-def ask_for_bill() -> str:
+def ask_for_bill() -> list:
     """If the user asks to see the bill"""
     print("retrieving bill...")
     return tracker.summary()
@@ -49,16 +37,12 @@ def ask_for_bill() -> str:
 def remove_from_bill(item: str) -> str:
     """Removes an item from the user's bill."""
     print("removing from bill...")
-    removed = tracker.remove(item)
-    if removed:
-        return f"{removed['name']} has been removed from the bill."
-    return "That item is not on your bill."
+    tracker.remove(item)
 
 def main():
     model = ChatOpenAI(temperature=0)
 
-
-    tools=[display_menu,add_to_bill, ask_for_bill, remove_from_bill]
+    tools=[display_menu,add_to_bill, ask_for_bill, remove_from_bill, display_full_menu]
     agent_executor = create_react_agent(model, tools)
 
     print("Hello! Welcome to Sushi Naiya")
