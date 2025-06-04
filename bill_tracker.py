@@ -12,8 +12,8 @@ class BillTracker:
     def summary(self):
         if not self.items:
             return "Your bill is currently empty."
-        total = sum(item["price"] for item in self.items)
-        lines = [f"{item['name']}: {item['price']}" for item in self.items]
+        total = sum(item["base_price"] for item in self.items)
+        lines = [f"{item['name']}: {item['base_price']}" for item in self.items]
         lines.append(f"Total: ${total:.2f}")
         return "\n".join(lines)
 
